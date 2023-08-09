@@ -22,7 +22,8 @@ jobs:
 
     steps:
       - name: Checkout specific branch
-        uses: actions/checkout@v3
+        if: github.ref != 'refs/heads/main'  # Skip the step if the event is not for the 'main' branch
+        uses: actions/checkout@v2
         with:
           repository: externaluseonly91/tf-2
 
@@ -39,7 +40,7 @@ jobs:
         uses: azure/login@v1
         with:         
           creds: ${{ secrets.AZURE_CREDENTIALS }}  
-          allow-no-subscriptions: true
+#          allow-no-subscriptions: true
 
           
       - name: Account show
