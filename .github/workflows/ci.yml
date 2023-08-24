@@ -39,7 +39,7 @@ jobs:
           ls -lrt
           pwd
           docker build -t $ECR_REPO_API:latest -f Dockerfile.rails .
-          docker build -t $ECR_REPO_SPA:latest -f Dockerfile.react ./spa
+          docker build -t $ECR_REPO_SPA:latest -f Dockerfile.react .
           docker build -t $ECR_REPO_NGINX:latest -f Dockerfile.nginx .
 
           # Authenticate Docker with ECR
