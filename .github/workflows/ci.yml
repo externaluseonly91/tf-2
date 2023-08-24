@@ -37,7 +37,8 @@ jobs:
           cd $GITHUB_WORKSPACE
           ls -la
           ls -lrt
-          docker build -t $ECR_REPO_API:latest -f ./Dockerfile.rails ./api
+          pwd
+          docker build -t $ECR_REPO_API:latest -f Dockerfile.rails ./api
           docker build -t $ECR_REPO_SPA:latest -f Dockerfile.react ./spa
           docker build -t $ECR_REPO_NGINX:latest -f Dockerfile.nginx .
 
