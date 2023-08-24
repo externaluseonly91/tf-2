@@ -5,7 +5,7 @@ WORKDIR /app
 # Debugging command to list directory contents
 RUN ls -la
 
-COPY ./api .
+COPY /api .
 
 # Debugging command to list directory contents
 RUN ls -la
