@@ -46,6 +46,6 @@ jobs:
           aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 846848477388.dkr.ecr.eu-central-1.amazonaws.com && echo "Docker login successful!"
 
           # Push images to ECR
-          docker push $ECR_REPO_API:latest
-          docker push $ECR_REPO_SPA:latest
-          docker push $ECR_REPO_NGINX:latest
+          docker push 846848477388.dkr.ecr.eu-central-1.amazonaws.com/my-api-repo:latest
+          docker push 846848477388.dkr.ecr.eu-central-1.amazonaws.com/my-spa-repo:latest
+          docker push 846848477388.dkr.ecr.eu-central-1.amazonaws.com/my-nginx-repo:latest
