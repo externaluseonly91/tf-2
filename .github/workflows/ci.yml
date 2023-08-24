@@ -1,19 +1,4 @@
-#name: tf-2
 
-#permissions:
-#  contents: write
-#  pages: write
-#  id-token: write
-#  packages: write
-
-#on:
-# push:
-#   branches: [  ]
-
-#jobs:
-#  build:
-#    runs-on: ubuntu-latest
-#    name: 'tf-02-job'
 
  
-          
+          ###
