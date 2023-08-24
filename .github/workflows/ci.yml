@@ -55,4 +55,4 @@ jobs:
           docker push ghcr.io/${{ github.repository_owner }}/my-nginx-repo:latest
 
       - name: Set up Minikube
-        uses: engineerd/setup-minikube@v2
+        uses: medyagh/setup-minikube@master
