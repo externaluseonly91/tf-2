@@ -29,6 +29,7 @@ jobs:
 
       - name: Build and Push Docker Images
         env:
+          AWS_REGION: eu-central-1
           ECR_REPO_API: my-api-repo
           ECR_REPO_SPA: my-spa-repo
           ECR_REPO_NGINX: my-nginx-repo
