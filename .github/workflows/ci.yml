@@ -56,3 +56,10 @@ jobs:
 
       - name: Set up Minikube
         uses: medyagh/setup-minikube@master
+        
+      - name: Deploy db
+        run: kubectl apply -f db-deployment.yaml
+        
+      - name: Deploy db
+        run: kubectl apply -f db-deployment.yaml
+        
