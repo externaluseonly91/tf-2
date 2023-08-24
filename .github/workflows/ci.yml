@@ -26,17 +26,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1  
 
-      - name: Set up Minikube
-        run: |
-          sudo apt-get install conntrack -y
-          export PATH="/usr/sbin:$PATH"
-          wget https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.28.0/crictl-v1.28.0-linux-amd64.tar.gz
-          tar -xzvf crictl-v1.x.x-linux-amd64.tar.gz
-          sudo mv crictl /usr/local/bin
-          curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-          sudo install minikube-linux-amd64 /usr/local/bin/minikube
-          minikube start --driver=none
-
       - name: start minikube
         id: minikube
         uses: medyagh/setup-minikube@latest
