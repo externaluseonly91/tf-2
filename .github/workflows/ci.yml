@@ -36,7 +36,7 @@ jobs:
           aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 846848477388.dkr.ecr.eu-central-1.amazonaws.com && echo "Docker login successful!"
 
       - name: Build & push
-        run: docker build -t my-api-repo:latest Dockerfile.rails .
+        run: docker build -t my-api-repo:latest -f Dockerfile.rails .
       
       - name: Docker push
         run: docker push 846848477388.dkr.ecr.eu-central-1.amazonaws.com/my-api-repo:latest
