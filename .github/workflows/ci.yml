@@ -26,26 +26,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1  
 
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build and Push Docker Images
+      - name: Build and Push API Docker Image
         env:
-          AWS_REGION: eu-central-1
-          ECR_REPO_API: my-api-repo
-          ECR_REPO_SPA: my-spa-repo
-          ECR_REPO_NGINX: my-nginx-repo
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPO: my-api-repo
         run: |
           cd $GITHUB_WORKSPACE
-          ls -la
-          ls -lrt
-          pwd
-          docker build -t $ECR_REPO_API:latest -f Dockerfile.rails .
-          docker build -t $ECR_REPO_SPA:latest -f Dockerfile.react .
-          docker build -t $ECR_REPO_NGINX:latest -f Dockerfile.nginx .
-
-          # Authenticate Docker with ECR
-          aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 846848477388.dkr.ecr.eu-central-1.amazonaws.com && echo "Docker login successful!"
-
-          # Push images to ECR
-          docker push 846848477388.dkr.ecr.eu-central-1.amazonaws.com/my-api-repo:latest
-          docker push 846848477388.dkr.ecr.eu-central-1.amazonaws.com/my-spa-repo:latest
-          docker push 846848477388.dkr.ecr.eu-central-1.amazonaws.com/my-nginx-repo:latest
+          docker build -t $ECR_REGISTRY/$ECR_REPO:latest -f Dockerfile.rails .
+          docker push $ECR_REGISTRY/$ECR_REPO:latest
