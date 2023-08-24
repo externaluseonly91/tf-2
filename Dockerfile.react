@@ -1,0 +1,13 @@
+FROM node:18
+
+WORKDIR /app
+COPY spa/package.json .
+COPY spa/package-lock.json .
+
+RUN npm install
+
+COPY spa .
+ENV PORT=4000
+EXPOSE $PORT
+
+ENTRYPOINT ["npm", "start"]

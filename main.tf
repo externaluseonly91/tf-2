@@ -13,7 +13,11 @@ terraform {
   }
 }
 
-
+terraform {
+  backend "local" {
+    path = "/Users/manishalankala/github/user2/aws-tf-state/terraform.tfstate"
+  }
+}
 
 resource "aws_iam_user" "github_iam_user" {
   name = "github-user"
@@ -99,4 +103,24 @@ resource "aws_iam_policy_attachment" "github_user_ecr_policy_attachment" {
   name       = "github-user-ecr-policy-attachment"
   policy_arn = aws_iam_policy.github_ecr_policy.arn
   users      = [aws_iam_user.github_iam_user.name]
+}
+
+
+
+# Create ECR repository
+resource "aws_ecr_repository" "my_ecr" {
+  name = "my-ecr"
+}
+
+# Attach ECR policy to the IAM user
+resource "aws_iam_policy_attachment" "github_user_ecr_repo_attachment" {
+  name       = "github-user-ecr-repo-attachment"
+  policy_arn = aws_iam_policy.github_ecr_policy.arn
+  users      = [aws_iam_user.github_iam_user.name]
+  depends_on = [aws_ecr_repository.my_ecr]
+}
+
+# Outputs
+output "ecr_repo_url" {
+  value = aws_ecr_repository.my_ecr.repository_url
 }
