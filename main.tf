@@ -81,8 +81,15 @@ resource "aws_iam_policy" "github_ecr_policy" {
           "ecr:BatchGetImage",
           "ecr:BatchCheckLayerAvailability",
           "ecr:PutImage",
+          "ecr:DescribeImages",
+          "ecr:DescribeRepositories",
+          "ecr:ListImages",
+          "ecr:ListTagsForResource",
+          "ecr:PutImageTagMutability",
           "ecr:InitiateLayerUpload",
           "ecr:UploadLayerPart",
+          "ecr:GetAuthorizationToken",
+          "ecr:GetDownloadUrlForLayer",
           "ecr:CompleteLayerUpload"
         ],
         "Resource": "*"
@@ -124,3 +131,14 @@ resource "aws_iam_policy_attachment" "github_user_ecr_repo_attachment" {
 output "ecr_repo_url" {
   value = aws_ecr_repository.my_ecr.repository_url
 }
+
+# Data source to retrieve ECR authorization token
+#data "aws_ecr_authorization_token" "my_ecr_auth" {}
+
+#output "ecr_registry_username" {
+#  value = base64decode(data.aws_ecr_authorization_token.my_ecr_auth.authorization_token)[0]
+#}
+
+#output "ecr_registry_password" {
+#  value = base64decode(data.aws_ecr_authorization_token.my_ecr_auth.authorization_token)[1]
+#}
