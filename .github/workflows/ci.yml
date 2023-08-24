@@ -75,18 +75,64 @@ jobs:
       - name: Deploy nginx
         run: kubectl apply -f nginx-deployment.yaml
 
+      - name: Wait for 10 minutes
+        run: sleep 600  # Wait for 10 minutes (600 seconds)
+
       - name: Get All Namespaces
         run: kubectl get namespaces
+        
+      - name: Wait for pods to be running
+        run: |
+          end=$((SECONDS+300))  # 900 seconds (15 minutes)
+          while [[ $SECONDS -lt $end ]]; do
+            if [[ $(kubectl get pods -n default | grep -c "Running") -eq 13 ]]; then
+              echo "All pods are running."
+              break
+           fi
+           echo "Waiting for pods to be running..."
+           sleep 10  # Wait for 10 seconds before checking again
+          done
 
       - name: pods
         run: kubectl get pods --all-namespaces
+      
 
       - name: service
         run: kubectl get services --all-namespaces
 
       - name: nodes
         run: kubectl get nodes
-
+      
       - name: Get Minikube IP
-        id: minikube_ip
-        run: echo "::set-output name=ip::$(minikube ip)"
+        id: get-minikube-ip
+        run: echo "MINIKUBE_IP=$(minikube ip)" >> $GITHUB_ENV
+
+      - name: Get NodePort for api service
+        id: get-api-nodeport
+        run: echo "API_NODEPORT=$(kubectl get service -n default api -o jsonpath='{.spec.ports[0].nodePort}')" >> $GITHUB_ENV
+
+      
+      - name: Get NodePort for spa service
+        id: get-spa-nodeport
+        run: echo "SPA_NODEPORT=$(kubectl get service -n default spa -o jsonpath='{.spec.ports[0].nodePort}')" >> $GITHUB_ENV
+
+      - name: Get NodePort for nginx service
+        id: get-nginx-nodeport
+        run: echo "NGINX_NODEPORT=$(kubectl get service -n default nginx -o jsonpath='{.spec.ports[0].nodePort}')" >> $GITHUB_ENV
+
+      - name: Deploy and test services
+        run: |
+          minikube_ip=$MINIKUBE_IP
+          api_nodeport=$API_NODEPORT
+          spa_nodeport=$SPA_NODEPORT
+          nginx_nodeport=$NGINX_NODEPORT
+
+      - name: Display NodePort information
+        run: |
+          echo "API NodePort: $API_NODEPORT"
+          echo "SPA NodePort: $SPA_NODEPORT"
+          echo "NGINX NodePort: $NGINX_NODEPORT"
+        env:
+          API_NODEPORT: ${{ steps.get-api-nodeport.outputs.API_NODEPORT }}
+          SPA_NODEPORT: ${{ steps.get-spa-nodeport.outputs.SPA_NODEPORT }}
+          NGINX_NODEPORT: ${{ steps.get-nginx-nodeport.outputs.NGINX_NODEPORT }}
