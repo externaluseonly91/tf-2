@@ -43,7 +43,7 @@ jobs:
           docker build -t $ECR_REPO_NGINX:latest -f Dockerfile.nginx .
 
           # Authenticate Docker with ECR
-          aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 846848477388.dkr.ecr.eu-central-1.amazonaws.com
+          aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 846848477388.dkr.ecr.eu-central-1.amazonaws.com && echo "Docker login successful!"
 
           # Push images to ECR
           docker push $ECR_REPO_API:latest
