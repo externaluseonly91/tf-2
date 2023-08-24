@@ -42,4 +42,4 @@ jobs:
         run: docker tag my-api-repo:latest 846848477388.dkr.ecr.eu-central-1.amazonaws.com/public-ecr/my-api-repo:latest
       
       - name: Docker push
-        run: docker push 846848477388.dkr.ecr.eu-central-1.amazonaws.com/public-ecr:latest
+        run: docker push 846848477388.dkr.ecr.eu-central-1.amazonaws.com/public-ecr/my-api-repo:latest
