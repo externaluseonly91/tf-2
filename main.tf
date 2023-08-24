@@ -1,80 +1,102 @@
+provider "aws" {
+  region = "eu-central-1"
+  access_key = "AKIA4KLA2JDGH4L3BSMJ"
+  secret_key = "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"
+}
+
 terraform {
   required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~> 3.59.0"
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.6"
     }
   }
 }
 
-provider "azurerm" {
-  features {}
-  subscription_id = var.AZURE_SUBSCRIPTION
-  client_id       = var.AZURE_CLIENT_ID 
-  client_secret   = var.AZURE_CLIENT_SECRET
-  tenant_id       = var.AZURE_TENANT_ID
-}
 
-terraform {
-  backend "azurerm" {
-    resource_group_name  = "dev-tf-state-rg"
-    storage_account_name = "devtfstatesa01"
-    container_name       = "dev-tfstate-container"
-    key                  = "dev.terraform.tfstate"
-  }
-}
 
-variable "AZURE_SUBSCRIPTION" {
-  type        = string
-  description = "Azure Subscription ID"
-  default = "e1b7cdca-1102-4a97-a25e-15fa3ea867c0"
-}
-
-variable "AZURE_CLIENT_ID" {
-  type        = string
-  description = "Azure Client ID"
-  default = "92dbd39a-ac50-42a2-98a4-19a553c9a859"
-}
-
-variable "AZURE_CLIENT_SECRET" {
-  type        = string
-  description = "Azure Client Secret"
-  default = ".AY8Q~W17Kaz2oB3Tep_xuA1ca2CGsDB6DOqvbU."
-}
-
-variable "AZURE_TENANT_ID" {
-  type        = string
-  description = "Azure Tenant ID"
-  default = "3baac997-9af4-488d-8cd0-5fa8a984e7af"
-}
-
-resource "azurerm_resource_group" "default" {
-  name     = "container-registry-rg"
-  location = "East US 2"
-
+resource "aws_iam_user" "github_iam_user" {
+  name = "github-user"
+  path          = "/"
   tags = {
-    environment = "Production"
+    tag-key = "Account used in Github actions to push docker images to ECR"
   }
 }
 
-resource "azurerm_container_registry" "acr" {
-  name                = "kspcontainerregistry"
-  resource_group_name = azurerm_resource_group.default.name
-  location            = "East US 2"
-  sku                 = "Standard"
-  admin_enabled       = true
+resource "aws_iam_access_key" "github_user_access_key" {
+  user = aws_iam_user.github_iam_user.name
+  depends_on = [aws_iam_user.github_iam_user]
 }
 
-output "acr_login_server" {
-  value = azurerm_container_registry.acr.login_server
+
+output "github_user_access_key" {
+  value = aws_iam_access_key.github_user_access_key.id
 }
 
-output "acr_admin_username" {
-  value     = azurerm_container_registry.acr.admin_username
-  sensitive = true
+output "secret" {
+  value = aws_iam_access_key.github_user_access_key.encrypted_secret
 }
 
-output "acr_admin_password" {
-  value     = azurerm_container_registry.acr.admin_password
-  sensitive = true
+
+resource "aws_iam_user_login_profile" "github_iam_user_profile" {
+  user    = aws_iam_user.github_iam_user.name
+}
+
+output "password" {
+  value = aws_iam_user_login_profile.github_iam_user_profile.encrypted_password
+}
+
+
+resource "aws_iam_policy" "github_ecr_authorization_policy" {
+  name        = "github-ecr-auth-policy"
+  description = "ECR authorization policy to authenticate with ECR"
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "ECRGetAuthorizationToken",
+            "Effect": "Allow",
+            "Action": "ecr:GetAuthorizationToken",
+            "Resource": "*"
+        }
+    ]
+})
+}
+
+resource "aws_iam_policy" "github_ecr_policy" {
+  name        = "github-ecr-policy"
+  description = "ECR policy to get and push images to repo we created earlier"
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "AllowPush",
+        "Effect": "Allow",
+        "Action": [
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:PutImage",
+          "ecr:InitiateLayerUpload",
+          "ecr:UploadLayerPart",
+          "ecr:CompleteLayerUpload"
+        ],
+        "Resource": "*"
+      }
+    ]
+  })
+}
+
+
+resource "aws_iam_policy_attachment" "github_user_auth_ecr_policy_attachment" {
+  name       = "github-user-auth-ecr-policy-attachment"
+  policy_arn = aws_iam_policy.github_ecr_authorization_policy.arn
+  users      = [aws_iam_user.github_iam_user.name]
+}
+
+
+resource "aws_iam_policy_attachment" "github_user_ecr_policy_attachment" {
+  name       = "github-user-ecr-policy-attachment"
+  policy_arn = aws_iam_policy.github_ecr_policy.arn
+  users      = [aws_iam_user.github_iam_user.name]
 }
