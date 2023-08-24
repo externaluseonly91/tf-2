@@ -31,18 +31,21 @@ jobs:
           # Check AWS authentication status
           aws sts get-caller-identity
 
-      - name: Login to Amazon ECR
-        run: |
-          aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 846848477388.dkr.ecr.eu-central-1.amazonaws.com && echo "Docker login successful!"
+#      - name: Login to Amazon ECR
+#        run: |
+#          aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 846848477388.dkr.ecr.eu-central-1.amazonaws.com && echo "Docker login successful!"
 
-      - name: Build & push
-        run: docker build -t my-api-repo:latest -f Dockerfile.rails .
 
-      - name: Tag Docker Image
-        run: docker tag my-api-repo:latest 846848477388.dkr.ecr.eu-central-1.amazonaws.com/public-ecr/my-api-repo:latest
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.MY_PROJECT_TOKEN }}
 
-      - name: Auth with ecr
-        run: aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 846848477388.dkr.ecr.eu-central-1.amazonaws.com
-      
-      - name: Docker push
-        run: docker push 846848477388.dkr.ecr.eu-central-1.amazonaws.com/public-ecr/my-api-repo:latest
+      - name: Build 
+        run: docker build -t ghcr.io/${{ github.repository_owner }}/my-image:${{ github.sha }} -f Dockerfile.rails .
+        
+      - name: Push
+        run: docker push ghcr.io/${{ github.repository_owner }}/my-image:${{ github.sha }}
+
