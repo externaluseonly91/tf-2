@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sidekiq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sidekiq
+  template:
+    metadata:
+      labels:
+        app: sidekiq
+    spec:
+      containers:
+        - name: sidekiq
+          image: ghcr.io/${{ github.repository_owner }}/my-api-repo:${{ github.sha }}
+          command: ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
+          env:
+            - name: REDIS_URL
+              value: 'redis://redis:6379/1'
+            - name: DB_HOST
+              value: db
+            - name: DB_USER
+              value: postgres
+            - name: DB_PASS
+              value: password
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "200m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sidekiq
+spec:
+  selector:
+    app: sidekiq
+  ports:
+    - protocol: TCP
+      port: 8080
