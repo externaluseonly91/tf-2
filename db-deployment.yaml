@@ -20,6 +20,12 @@ spec:
               value: password
           ports:
             - containerPort: 5432
+          volumeMounts:                   
+            - name: api-db-volume
+              mountPath: /var/lib/postgresql/data
+      volumes:                           
+        - name: api-db-volume
+          emptyDir: {}          
 ---
 apiVersion: v1
 kind: Service
