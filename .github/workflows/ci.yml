@@ -44,8 +44,7 @@ jobs:
           password: ${{ secrets.MY_PROJECT_TOKEN }}
 
       - name: Build 
-        run: docker build -t ghcr.io/${{ github.repository_owner }}/my-image:${{ github.sha }} -f Dockerfile.rails .
-        
-      - name: Push
-        run: docker push ghcr.io/${{ github.repository_owner }}/my-image:${{ github.sha }}
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/my-image:${{ github.sha }} -f Dockerfile.rails .
+          docker push ghcr.io/${{ github.repository_owner }}/my-image:${{ github.sha }}
 
