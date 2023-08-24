@@ -26,9 +26,21 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1  
 
-      - name: start minikube
-        id: minikube
-        uses: medyagh/setup-minikube@latest
 
-      - name: kubectl
-        run: kubectl get pods -A 
+      - name: Build and Push Docker Images
+        env:
+          ECR_REPO_API: my-api-repo
+          ECR_REPO_SPA: my-spa-repo
+          ECR_REPO_NGINX: my-nginx-repo
+        run: |
+          docker build -t $ECR_REPO_API:latest -f Dockerfile.rails ./api
+          docker build -t $ECR_REPO_SPA:latest -f Dockerfile.react ./spa
+          docker build -t $ECR_REPO_NGINX:latest -f Dockerfile.nginx .
+
+          # Authenticate Docker with ECR
+          aws ecr get-login-password --region eu-central-1
+
+          # Push images to ECR
+          docker push $ECR_REPO_API:latest
+          docker push $ECR_REPO_SPA:latest
+          docker push $ECR_REPO_NGINX:latest
