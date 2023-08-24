@@ -63,8 +63,30 @@ jobs:
       - name: Deploy redis
         run: kubectl apply -f redis-deployment.yaml
         
-      - name: Deploy db
+      - name: Deploy sidekiq
         run: kubectl apply -f sidekiq-deployment.yaml
         
       - name: Deploy api
         run: kubectl apply -f api-deployment.yaml
+
+      - name: Deploy spa
+        run: kubectl apply -f spa-deployment.yaml
+
+      - name: Deploy nginx
+        run: kubectl apply -f nginx-deployment.yaml
+
+      - name: Get All Namespaces
+        run: kubectl get namespaces
+
+      - name: pods
+        run: kubectl get pods --all-namespaces
+
+      - name: service
+        run: kubectl get services --all-namespaces
+
+      - name: nodes
+        run: kubectl get nodes
+
+      - name: Get Minikube IP
+        id: minikube_ip
+        run: echo "::set-output name=ip::$(minikube ip)"
