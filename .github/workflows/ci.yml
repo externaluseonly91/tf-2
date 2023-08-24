@@ -59,7 +59,12 @@ jobs:
         
       - name: Deploy db
         run: kubectl apply -f db-deployment.yaml
+
+      - name: Deploy redis
+        run: kubectl apply -f redis-deployment.yaml
         
       - name: Deploy db
-        run: kubectl apply -f db-deployment.yaml
+        run: kubectl apply -f sidekiq-deployment.yaml
         
+      - name: Deploy api
+        run: kubectl apply -f api-deployment.yaml
