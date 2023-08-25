@@ -144,10 +144,11 @@ jobs:
           NGINX_NODEPORT: ${{ steps.get-nginx-nodeport.outputs.NGINX_NODEPORT }}
           
       - name: Get Invalid Pods
+        id: get_invalid_pods
         run: |
           invalid_pods=$(kubectl get pods -o json | jq -r '.items[] | select(.status.phase == "InvalidImageName") | .metadata.name')
           echo "Invalid Pods: $invalid_pods"
-          echo "::set-env name=INVALID_PODS::$invalid_pods"
+          echo "INVALID_PODS=$invalid_pods" >> $GITHUB_ENV
 
       - name: Display Invalid Pods
         run: echo $INVALID_PODS
