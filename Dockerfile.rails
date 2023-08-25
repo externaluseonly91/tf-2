@@ -2,16 +2,10 @@ FROM ruby:3.1.3 AS rails-env
 
 WORKDIR /app
 
-
-RUN ls -la
-
 COPY api .
 
-COPY api/* .
-
-RUN ls -la
-
 RUN gem install rails bundler
+
 RUN bundle install
 
-ENTRYPOINT ["bundle", "exec"]
+ENTRYPOINT ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
