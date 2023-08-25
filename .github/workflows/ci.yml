@@ -50,15 +50,24 @@ jobs:
           docker build -t ghcr.io/${{ github.repository_owner }}/my-api-repo:latest -f Dockerfile.rails .
           docker push ghcr.io/${{ github.repository_owner }}/my-api-repo:latest
 
+      - name: Wait for 5 minutes
+        run: sleep 300  # Wait for 5 minutes (300 seconds)
+
       - name: Build my-spa-repo
         run: |
           docker build -t ghcr.io/${{ github.repository_owner }}/my-spa-repo:latest -f Dockerfile.react .
           docker push ghcr.io/${{ github.repository_owner }}/my-spa-repo:latest
 
+      - name: Wait for 5 minutes
+        run: sleep 300  # Wait for 5 minutes (300 seconds)
+
       - name: Build my-nginx-repo
         run: |
           docker build -t ghcr.io/${{ github.repository_owner }}/my-nginx-repo:latest -f Dockerfile.nginx .
           docker push ghcr.io/${{ github.repository_owner }}/my-nginx-repo:latest
+
+      - name: Wait for 5 minutes
+        run: sleep 300  # Wait for 5 minutes (300 seconds)
 
       - name: Set up Minikube
         uses: medyagh/setup-minikube@master
@@ -66,20 +75,36 @@ jobs:
       - name: Deploy db
         run: kubectl apply -f db-deployment.yaml
 
+      - name: Wait for 10 minutes
+        run: sleep 600  # Wait for 10 minutes (600 seconds)
+
       - name: Deploy redis
         run: kubectl apply -f redis-deployment.yaml
+
+      - name: Wait for 10 minutes
+        run: sleep 600  # Wait for 10 minutes (600 seconds)
         
       - name: Deploy sidekiq
         run: kubectl apply -f sidekiq-deployment.yaml
+
+      - name: Wait for 10 minutes
+        run: sleep 600  # Wait for 10 minutes (600 seconds)
         
       - name: Deploy api
         run: kubectl apply -f api-deployment.yaml
 
+      - name: Wait for 10 minutes
+        run: sleep 600  # Wait for 10 minutes (600 seconds)
+
       - name: Deploy spa
         run: kubectl apply -f spa-deployment.yaml
 
+      - name: Wait for 10 minutes
+        run: sleep 600  # Wait for 10 minutes (600 seconds)
+
       - name: Deploy nginx
         run: kubectl apply -f nginx-deployment.yaml
+
 
       - name: Wait for 10 minutes
         run: sleep 600  # Wait for 10 minutes (600 seconds)
