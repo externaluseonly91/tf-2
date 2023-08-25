@@ -89,7 +89,7 @@ jobs:
         
       - name: Wait for pods to be running
         run: |
-          end=$((SECONDS+300))  # 900 seconds (15 minutes)
+          end=$((SECONDS+600))  # 600 seconds (10 minutes)
           while [[ $SECONDS -lt $end ]]; do
             if [[ $(kubectl get pods -n default | grep -c "Running") -eq 13 ]]; then
               echo "All pods are running."
@@ -142,3 +142,18 @@ jobs:
           API_NODEPORT: ${{ steps.get-api-nodeport.outputs.API_NODEPORT }}
           SPA_NODEPORT: ${{ steps.get-spa-nodeport.outputs.SPA_NODEPORT }}
           NGINX_NODEPORT: ${{ steps.get-nginx-nodeport.outputs.NGINX_NODEPORT }}
+          
+      - name: Get Invalid Pods
+        run: |
+          invalid_pods=$(kubectl get pods -o json | jq -r '.items[] | select(.status.phase == "InvalidImageName") | .metadata.name')
+          echo "Invalid Pods: $invalid_pods"
+          echo "::set-env name=INVALID_PODS::$invalid_pods"
+
+      - name: Display Invalid Pods
+        run: echo $INVALID_PODS
+
+      - name: Get and Display Logs for Invalid Pods
+        run: |
+          for pod in $INVALID_PODS; do
+            kubectl logs $pod
+          done
