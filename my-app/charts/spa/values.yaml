@@ -1,1 +1,9 @@
+replicaCount: 1
+image:
+  repository: ghcr.io/externaluseonly91/spa 
+  tag: latest
+  pullPolicy: IfNotPresent
 
+service:
+  name: spa
+  port: 4000
