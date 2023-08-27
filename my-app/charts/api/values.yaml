@@ -1,1 +1,26 @@
 
+# Define default values
+replicaCount: 1
+image:
+  repository: ghcr.io/externaluseonly91/api
+  tag: latest
+  pullPolicy: IfNotPresent
+service:
+  port: 3000
+  targetPort: 3000
+
+# Environment variables
+env:
+  REDIS_URL: redis://redis:6379/1
+  DB_HOST: db
+  DB_USER: postgres
+  DB_PASS: password
+
+# Resource requests and limits
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "512Mi"
+    cpu: "200m"
