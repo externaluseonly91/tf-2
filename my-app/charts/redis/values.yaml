@@ -1,5 +1,9 @@
 redis:
   replicaCount: 1
   image:
-    repository: ghcr.io/externaluseonly91/redis-repo
+    repository: ghcr.io/externaluseonly91/redis
     tag: latest
+
+service:
+  name: redis
+  port: 6379
