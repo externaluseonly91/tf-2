@@ -10,6 +10,11 @@
 ![casp-4](https://github.com/externaluseonly91/tf-2/assets/134925902/1d96ee08-2716-437e-ae34-2b12f23b5e57)
 
 
+![Screenshot 2023-08-28 at 16 40 13](https://github.com/externaluseonly91/tf-2/assets/134925902/024863ae-e594-4ca6-8336-d05f90e70e1e)
+
+
+![Screenshot 2023-08-28 at 16 38 18](https://github.com/externaluseonly91/tf-2/assets/134925902/dac52f5e-a6b0-4e0f-bb5a-4dbf75d31931)
+
 ### Dockerfile.rails
 ```
 FROM ruby:3.1.3 AS rails-env
