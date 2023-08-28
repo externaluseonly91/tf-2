@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: sidekiq
-          image: ghcr.io/${{ github.repository_owner }}/api:latest
+          image: ghcr.io/externaluseonly91/api:latest
           command: ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
           env:
             - name: REDIS_URL
