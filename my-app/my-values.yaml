@@ -1,0 +1,24 @@
+api:
+  image:
+    repository: ghcr.io/externaluseonly91/api
+    tag: latest
+
+nginx:
+  image:
+    repository: ghcr.io/externaluseonly91/nginx
+    tag: latest
+
+redis:
+  image:
+    repository: redis
+    tag: latest
+
+sidekiq:
+  image:
+    repository: ghcr.io/externaluseonly91/api
+    tag: latest
+
+spa:
+  image:
+    repository: ghcr.io/externaluseonly91/spa
+    tag: latest
