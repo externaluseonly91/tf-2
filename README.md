@@ -98,3 +98,10 @@ spec:
       targetPort: 3000
       nodePort: 31000  # Specify your desired NodePort value
 ```
+
+
+packages
+
+https://github.com/externaluseonly91?tab=packages
+
+![image](https://github.com/externaluseonly91/tf-2/assets/134925902/df8fe864-b83b-4b26-92f8-6d8972bc618b)
