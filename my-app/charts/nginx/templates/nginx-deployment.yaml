@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: ghcr.io/${{ github.repository_owner }}/nginx:latest
+          image: ghcr.io/externaluseonly91/nginx:latest
           ports:
             - containerPort: 8000
