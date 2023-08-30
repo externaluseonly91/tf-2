@@ -113,6 +113,9 @@ https://github.com/externaluseonly91?tab=packages
 
 
 ```
+
+needs to be added for our environments in the ci.yml
+
 if: github.ref_name == 'master' || github.ref_name == 'integration' || github.ref_name == 'integration'
 
 if: github.ref_name == 'master' || github.ref_name == 'staging' || github.ref_name == 'staging'
