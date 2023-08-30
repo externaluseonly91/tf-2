@@ -145,3 +145,14 @@ if: github.ref_name == 'master' || github.ref_name == 'production' || github.ref
           command: helm upgrade --install <release name> --install --wait <chart> -f <path to values.yaml>
 
 ```
+
+
+Comments :
+
+```
+
+Pending to add or invoke modules for https://github.com/terraform-aws-modules for eks,vpc,subnets,nodes,autoscaling,nsg...etc
+
+To make an end to end process i will try to write terraform modules and invoke the functionality based on the environments ( dev, staging, production ) from creating  github repository, teams, organizations, helm, kubernetes and run staging of pipelines with  lint, git-crypt for crdentials, integrate sonarqube,security scan checks,synk for docker image scan, ...etc would integrate 
+
+```
