@@ -37,7 +37,11 @@ ENTRYPOINT ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
 
 ![Screenshot 2023-08-28 at 16 38 18](https://github.com/externaluseonly91/tf-2/assets/134925902/dac52f5e-a6b0-4e0f-bb5a-4dbf75d31931)
 
-here to access the service publically i have used Nodeport
+
+
+#### Note:
+
+here for dev purpose to access the service publically i have used Nodeport else in production screanio its clusterip served with a loadbalancer
 
 ```
 /tf-2/my-app/charts/api$ cat values.yaml 
@@ -105,3 +109,36 @@ packages
 https://github.com/externaluseonly91?tab=packages
 
 ![image](https://github.com/externaluseonly91/tf-2/assets/134925902/df8fe864-b83b-4b26-92f8-6d8972bc618b)
+
+
+
+```
+if: github.ref_name == 'master' || github.ref_name == 'integration' || github.ref_name == 'integration'
+
+if: github.ref_name == 'master' || github.ref_name == 'staging' || github.ref_name == 'staging'
+
+if: github.ref_name == 'master' || github.ref_name == 'production' || github.ref_name == 'production'
+
+
+- name: AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::<your account id>:role/github-actions
+          role-session-name: ci-run-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name: kubeconfig
+        run: |
+          aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}  --kubeconfig ./kubeconfig
+          echo 'KUBE_CONFIG_DATA<<EOF' >> $GITHUB_ENV
+          echo $(cat ./kubeconfig | base64) >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+
+      - name: helm deploy
+        uses: koslib/helm-eks-action@master
+        env:
+          KUBE_CONFIG_DATA: ${{ env.KUBE_CONFIG_DATA }}
+        with:
+          command: helm upgrade --install <release name> --install --wait <chart> -f <path to values.yaml>
+
+```
